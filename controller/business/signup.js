@@ -1,29 +1,32 @@
 const express = require("express")
 const router = express.Router();
-const Business = require('../../model/expert/expert')
+const Business = require('../../model/business/business')
 router.post('/', function(req,res){
-    const { expertName,expertAddress,
-        expertMobileNo, expertEmail,
-        expertPassword} = req.body;
+    const { businessUName,
+        businessUAddress,
+        businessUMobileNo,
+        businessUEmail,
+        businessUPassword,} = req.body;
 
-    console.log("signup")
-    Expert.findOne({expertEmail:expertEmail},async (err,findExpert) => {
-        if(findExpert){
-            res.status(200).json({success:false,message:"Expert with this email already registered"});
+    Business.findOne({businessUEmail},async (err,findBusiness) => {
+        if(findBusiness){
+            res.status(200).json({success:false,message:"Business with this email already registered"});
         }else{
             var date = new Date()
-            const expertData = {
-                expertName,
-                expertAddress,
-                expertMobileNo,
-                expertEmail,
-                expertPassword,
-                expertLoginTime:date
+            const businessData = {
+               businessUName,
+               businessUAddress,
+               businessUMobileNo,
+               businessUEmail,
+               businessUPassword,
+               businessLoginTime:date
             }
-            var expert = new Expert(expertData);
-            expert.save().then((response)=>{
-                res.status(200).json({success:true,result:response,message:"Expert register successfull"});
-            }).catch((error)=>console.error())
+            
+            var business = new Business(businessData);
+
+            business.save().then((response)=>{
+                res.status(200).json({success:true,message:"Business user register successfull"});
+            }).catch((error)=>console.log("error",error))
         }
     })
 

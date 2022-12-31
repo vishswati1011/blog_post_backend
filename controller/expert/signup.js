@@ -6,8 +6,7 @@ router.post('/', function(req,res){
     const { expertName,expertAddress,
         expertMobileNo, expertEmail,
         expertPassword} = req.body;
-
-    console.log("signup")
+        
     Expert.findOne({expertEmail:expertEmail},async (err,findExpert) => {
         if(findExpert){
             res.status(200).json({success:false,message:"Expert with this email already registered"});
