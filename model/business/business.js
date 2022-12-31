@@ -23,6 +23,10 @@ const business =new mongoose.Schema({
         type:String,
         required:true,
     },
+    businessImage:{
+        data:Buffer,
+        contentType:String
+    },
     businessActive:{
         type:Boolean,
         required:false

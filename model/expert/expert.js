@@ -23,9 +23,16 @@ const expert =new mongoose.Schema({
         type:String,
         required:true,
     },
+    exportImage:{
+        data:Buffer,
+        contentType:String
+    },
     expertActive:{
         type:Boolean,
         required:false
+    },
+    imgId:{
+        type:String,
     },
     expertLoginTime:{
         type:Date,
