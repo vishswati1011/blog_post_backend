@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router();
 const Business = require('../../model/business/business')
 router.post('/', function(req,res){
+    console.log("body:",req.body)
     const { businessUName,
         businessUAddress,
         businessUMobileNo,
