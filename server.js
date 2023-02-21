@@ -3,6 +3,7 @@ const cors = require("cors");
 const db = require('./db');
 const business = require("./routes/business");
 const expert = require("./routes/expert");
+const track= require("./routes/track")
 const app = express();
 const socketio = require("socket.io")
 const {trackActivity} = require('./functions/trackActivity')
@@ -23,7 +24,7 @@ app.use(express.json());
 
 app.use('/expert',expert)
 app.use('/business',business)
-
+app.use("/track",track)
 const server= app.listen(PORT,()=> {
   console.log(`server listening to port ${PORT}`)
 })

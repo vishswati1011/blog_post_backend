@@ -39,7 +39,7 @@ router.post('/', function(req,res){
                         expiresIn:86400  //24 hours
                     })
 
-                    res.status(200).send({success:true,message:"Expert login successfull!",token:token})
+                    res.status(200).send({success:true,message:"Expert login successfull!",token:token,userId:findExpert._id})
             
         }
     })

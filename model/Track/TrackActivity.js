@@ -4,7 +4,7 @@ const mongoose = require ('mongoose');
 
 const TrackActivity =new mongoose.Schema({
     VisitedDate:{
-        type:Date,
+        type:String,
         required:true,
     },
     UserId:{
