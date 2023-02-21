@@ -3,6 +3,7 @@ const router = express.Router();
 const Expert = require('../../model/expert/expert')
 router.post('/', function(req,res){
 
+    console.log("signup api called",req.body)
     const { expertName,expertAddress,
         expertMobileNo, expertEmail,
         expertPassword} = req.body;

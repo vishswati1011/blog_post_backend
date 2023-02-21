@@ -7,7 +7,7 @@ const TrackActivity =new mongoose.Schema({
         type:Date,
         required:true,
     },
-    UserID:{
+    UserId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "expert"
     },

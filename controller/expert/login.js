@@ -8,19 +8,21 @@ const config = require('../../config/auth.config')
 router.post('/', function(req,res){
 
     const { expertEmail , expertPassword}= req.body;
-
+  console.log("login api called",req.body)
     Expert.findOne({expertEmail},async (expertError,findExpert) => {
 
         if(!findExpert){
             res.status(200).send({success:false,message:"Expert Not Found."})
         }else{
 
-            var passwordIsValid = bcrypt.compareSync(
-                req.body.password,
-                user.password
-              );
+            // var passwordIsValid = bcrypt.compareSync(
+            //     req.body.expertPassword,
+            //     findExpert.expertPassword
+            //   );
         
-              if (!passwordIsValid) {
+            if(!expertPassword===findExpert.expertPassword)
+            {
+             
                 return res.status(401).send({
                   accessToken: null,
                   message: "Invalid Password!"
