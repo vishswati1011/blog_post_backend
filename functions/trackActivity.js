@@ -46,17 +46,40 @@ const trackActivity = async(data,callback) => {
             item.pagename===VisitedPages[0].pagename
         )
         console.log(pageToUpdate,"pagetoupdate")
-        await addTime(pageToUpdate.visitedtime,VisitedPages[0].visitedtime,async function(getupdatetime){
+        if(pageToUpdate){
+            await addTime(pageToUpdate.visitedtime,VisitedPages[0].visitedtime,async function(getupdatetime){
 
-            console.log("getupdatetime",getupdatetime)
-            VisitPages= await VisitPages.map(
-                item=>
-                    item.pagename===VisitPages[0].pagename ?
-                     {...item,visitedtime:getupdatetime[1]}
-                     :item
-                )
-                console.log(VisitPages,"updated data")
-              TrackActivity.updateOne({VisitedDate},{$set:{VisitedPages:VisitPages}},function(err,updateTrack) {
+                console.log("getupdatetime",getupdatetime)
+                VisitPages= await VisitPages.map(
+                    item=>
+                        item.pagename===VisitPages[0].pagename ?
+                         {...item,visitedtime:getupdatetime[1]}
+                         :item
+                    )
+                    console.log(VisitPages,"updated data")
+                  TrackActivity.updateOne({VisitedDate},{$set:{VisitedPages:VisitPages}},function(err,updateTrack) {
+                    if(err) {
+                      console.log(err);
+                    }else{
+                        if (updateTrack) {
+                            callback([true, updateTrack]);
+                        } else {
+                            callback([false, []]);
+                    
+                        }
+                    }
+                  })
+            })
+        }else{
+            console.log("VisitedPages",VisitedPages[0])
+            const add=VisitedPages[0]
+            // VisitPages={...VisitPages,add};
+            console.log("add",VisitPages)
+
+            VisitPages=[...VisitPages,add]
+            console.log("Visit",VisitPages)
+
+            TrackActivity.updateOne({VisitedDate},{$set:{VisitedPages:VisitPages}},function(err,updateTrack) {
                 if(err) {
                   console.log(err);
                 }else{
@@ -68,12 +91,22 @@ const trackActivity = async(data,callback) => {
                     }
                 }
               })
-        })
+        }
+    
     
     }else{
         const trackActivityData=new TrackActivity(data);
+        try{
         const result=await trackActivityData.save();
         console.log("result",result)
+        if (updateTrack) {
+            callback([true, updateTrack]);
+        }
+        }catch(error){
+           
+                callback([false, updateTrack]);
+          
+        }
     }
 
 }
