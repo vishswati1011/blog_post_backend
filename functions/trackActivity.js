@@ -30,55 +30,69 @@ const addTime =(lasttime,currenttime,callback)=>{
     }
 }
 
-const updatePage =async(finddata,findUser,TrackData,callback) =>{
+const updatePage =async(finddata,findUser,TrackData,VisitedDate,callback) =>{
     let allpages=findUser.VisitedPages
-    let {UserId,VisitedDate}=TrackData;
+    console.log("Date",TrackData)
+    let {UserId}=TrackData;
     let page=TrackData.VisitedPages
     let oldpage=findUser.VisitedPages
-    const findPage = allpages.find(item=> 
+    const findPage = oldpage.find(item=> 
         item.pagename===page[0].pagename
     )
     if(findPage){
-        await addTime(findPage.visitedtime,page[0].visitedtime,async function(getupdatetime){
-            allpages= allpages.map(
-                (item)=>
-                    item.pagename===page[0].pagename ?
-                    {...item,visitedtime:"getupdatetime[1]"}
-                     :item
-                )
-                console.log(allpages,"allpages after")
-                // updatealldata= await updatealldata.map(
-                //     item=>
-                //         item.UserId===UserId ?
-                //          {...item,VisitedPages:allpages}
-                //          :item
-                //     )
+        // await addTime(findPage.visitedtime,page[0].visitedtime,async function(getupdatetime){
+        //     allpages= allpages.map(
+        //         (item)=>
+        //             item.pagename===page[0].pagename ?
+        //             {...item,visitedtime:"getupdatetime[1]"}
+        //              :item
+        //         )
+        //         console.log(allpages,"allpages after")
+        //         // updatealldata= await updatealldata.map(
+        //         //     item=>
+        //         //         item.UserId===UserId ?
+        //         //          {...item,VisitedPages:allpages}
+        //         //          :item
+        //         //     )
 
-                // console.log(updatealldata[0].VisitedPages,"updated data")
+        //         // console.log(updatealldata[0].VisitedPages,"updated data")
 
-            //   TrackActivity.updateOne({VisitedDate},{$set:{TrackData:updatealldata}},function(err,updateTrack) {
-            //     if(err) {
-            //       console.log(err);
-            //     }else{
-            //         if (updateTrack) {
-            //             callback([true, updateTrack]);
-            //         } else {
-            //             callback([false, []]);
+        //     //   TrackActivity.updateOne({VisitedDate},{$set:{TrackData:updatealldata}},function(err,updateTrack) {
+        //     //     if(err) {
+        //     //       console.log(err);
+        //     //     }else{
+        //     //         if (updateTrack) {
+        //     //             callback([true, updateTrack]);
+        //     //         } else {
+        //     //             callback([false, []]);
                 
-            //         }
-            //     }
-            //   })
-        })
+        //     //         }
+        //     //     }
+        //     //   })
+        // })
     }else{
         const add=page[0]
         oldpage=[...oldpage,add]
-        console.log(UserId,"allp")
+        // console.log(oldpage,"allp")
  
         await updatevisitpage(finddata.TrackData,oldpage,UserId,async function (getupdated){
             
-            console.log(getupdated[1][0].VisitedPages,"getupdated")
-            
-            TrackActivity.updateOne({VisitedDate},{$set:{TrackData:getupdated[1][0].VisitedPages}},function(err,updateTrack) {
+            console.log(getupdated[1],"getupdated",VisitedDate)
+            // const data= [
+            //     {
+            //       UserId: "63f49c23c4ed382aaccf4160",
+            //       VisitedPages:[{ "pagename": "blog", "visitedtime": {"hours":2,"min":11,"sec":25 } }],
+            //       _id: "63f78a006beb1d7c94bf85e6"
+            //     },
+            //     {
+            //       UserId: "63f49c23c4ed382aaccf4150",
+            //       VisitedPages:[{ "pagename": "profile", "visitedtime": {"hours":2,"min":11,"sec":25 } },
+            //       { "pagename": "blog", "visitedtime": {"hours":2,"min":11,"sec":25 } }],
+            //       _id: "63f78a6f7c8b7f10fc5b3f95"
+            //     }
+            //   ]
+            TrackActivity.updateMany({VisitedDate},{$set:{'TrackData':getupdated[1]}},function(err,updateTrack) {
+                console.log(updateTrack)
                 if(err) {
                   console.log(err);
                 }else{
@@ -90,23 +104,23 @@ const updatePage =async(finddata,findUser,TrackData,callback) =>{
                     }
                 }
               })
-        })
-
-         
-        
+        })        
     }
 }
 
 
 const updatevisitpage = async (finddata,oldpage,UserId,callback) =>{
+    // console.log("update now",finddata)
         //Find index of specific object using findIndex method.    
         objIndex = finddata.findIndex((item => String(item.UserId)===UserId));
         //Log object to Console.
-        console.log("Before update: ", finddata[objIndex])
+        // console.log("Before update: ", finddata[objIndex])
         //Update object's name property.
         finddata[objIndex].VisitedPages =oldpage
         //Log object to console again.
-        console.log("After update: ", finddata[objIndex])
+        // console.log("After update: ", finddata[objIndex])
+        // console.log("After update: ", finddata)
+
         if(finddata){
             callback([true, finddata]);
         } else {
@@ -115,21 +129,21 @@ const updatevisitpage = async (finddata,oldpage,UserId,callback) =>{
 }
 
 
-// const updatettrackata = async (finddata,oldpage,UserId,callback) =>{
-//     //Find index of specific object using findIndex method.    
-//     objIndex = finddata.findIndex((item => String(item.UserId)===UserId));
-//     //Log object to Console.
-//     console.log("Before update: ", finddata[objIndex])
-//     //Update object's name property.
-//     finddata[objIndex].VisitedPages =oldpage
-//     //Log object to console again.
-//     console.log("After update: ", finddata[objIndex])
-//     if(finddata){
-//         callback([true, finddata]);
-//     } else {
-//         callback([false, []]);
-//     } 
-// }
+const updatettrackata = async (finddata,oldpage,UserId,callback) =>{
+    //Find index of specific object using findIndex method.    
+    objIndex = finddata.findIndex((item => String(item.UserId)===UserId));
+    //Log object to Console.
+    console.log("Before update: ", finddata[objIndex])
+    //Update object's name property.
+    finddata[objIndex].VisitedPages =oldpage
+    //Log object to console again.
+    console.log("After update: ", finddata[objIndex])
+    if(finddata){
+        callback([true, finddata]);
+    } else {
+        callback([false, []]);
+    } 
+}
 
 
 const trackActivity = async(data,callback) => {
@@ -147,7 +161,7 @@ const trackActivity = async(data,callback) => {
         )
         if(findUser){
 
-             await updatePage(finddata,findUser,TrackData,async function(getupdatetime){
+             await updatePage(finddata,findUser,TrackData,VisitedDate,async function(getupdatetime){
                 if (getupdatetime) {
                     callback([true, getupdatetime]);
                 } else {
@@ -158,7 +172,7 @@ const trackActivity = async(data,callback) => {
         }else{
             console.log(updatedata)
             const addnewUser =[...updatedata,TrackData]
-            console.log("add new user",addnewUser)
+            // console.log("add new user",addnewUser)
             TrackActivity.updateOne({VisitedDate},{$set:{TrackData:addnewUser}},function(err,updateTrack) {
                 if(err) {
                   console.log(err);
