@@ -7,16 +7,27 @@ const TrackActivity =new mongoose.Schema({
         type:String,
         required:true,
     },
-    TrackData:{
-        type:Array
-    }
-    // UserId:{
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "expert"
-    // },
-    // VisitedPages:{
-    //     type:Array,
-    // } 
+    TrackData:[
+        {
+            UserId:{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "expert"
+            },
+            VisitedPages:[
+                {
+                    pagename :{
+                        type:String
+                    },
+                    visitedtime:{
+                        hours:{type:Number},
+                        min:{type:Number},
+                        sec:{type:Number}
+                    }
+                }
+            ]
+        }
+    ]
+   
 },{
     timestamps: true
 })

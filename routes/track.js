@@ -4,7 +4,7 @@ var {trackActivity} = require('../functions/trackActivity')
 
 router.post('/',(req,res)=>{
 
-        console.log("track api",req.body);
+        // console.log("track api",req.body);
         const response=trackActivity(req.body,function(updatedTrack){
                 if(!updatedTrack[0]){
                         res.status(201).json({message:"Unable to update status",success:false})

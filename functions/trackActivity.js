@@ -3,10 +3,8 @@ const TrackActivity = require('../model/Track/TrackActivity')
 const moment =require('moment');
 
 const addTime =(lasttime,currenttime,callback)=>{
-    console.log("lasttime",lasttime)
     const sec0=lasttime.sec, min0=lasttime.min , hours0=lasttime.hours;
     const {hours,min,sec}=currenttime;
-    console.log(hours0,min0,sec0,"hour",hours,min,sec) //3:40:55
     let updatemin=0,updatehourse=0
     let updatesec=sec0+sec
     if(updatesec>60){
@@ -23,7 +21,7 @@ const addTime =(lasttime,currenttime,callback)=>{
         min:updatemin,
         sec:updatesec
     }
-    console.log(toupdatetime)
+    // console.log(toupdatetime)
     if (toupdatetime) {
         callback([true, toupdatetime]);
     } else {
@@ -31,55 +29,56 @@ const addTime =(lasttime,currenttime,callback)=>{
 
     }
 }
-const trackActivity = async(data,callback) => {
 
-    const  {VisitedDate,UserId,VisitedPages} = data;
-    const trackData= await TrackActivity.findOne({VisitedDate:VisitedDate});
-    // const array=JSON.parse(JSON.stringify(VisitedPages))
-    console.log("VisitedDate",VisitedPages[0].pagename)
-    
-    if(trackData){
-      
-        let VisitPages=trackData.VisitedPages
-        console.log("visitedPAges",VisitPages)
-        const pageToUpdate = VisitPages.find(item=> 
-            item.pagename===VisitedPages[0].pagename
-        )
-        console.log(pageToUpdate,"pagetoupdate")
-        if(pageToUpdate){
-            await addTime(pageToUpdate.visitedtime,VisitedPages[0].visitedtime,async function(getupdatetime){
+const updatePage =async(finddata,findUser,TrackData,callback) =>{
+    let allpages=findUser.VisitedPages
+    let {UserId,VisitedDate}=TrackData;
+    let page=TrackData.VisitedPages
+    let oldpage=findUser.VisitedPages
+    const findPage = allpages.find(item=> 
+        item.pagename===page[0].pagename
+    )
+    if(findPage){
+        await addTime(findPage.visitedtime,page[0].visitedtime,async function(getupdatetime){
+            allpages= allpages.map(
+                (item)=>
+                    item.pagename===page[0].pagename ?
+                    {...item,visitedtime:"getupdatetime[1]"}
+                     :item
+                )
+                console.log(allpages,"allpages after")
+                // updatealldata= await updatealldata.map(
+                //     item=>
+                //         item.UserId===UserId ?
+                //          {...item,VisitedPages:allpages}
+                //          :item
+                //     )
 
-                console.log("getupdatetime",getupdatetime)
-                VisitPages= await VisitPages.map(
-                    item=>
-                        item.pagename===VisitPages[0].pagename ?
-                         {...item,visitedtime:getupdatetime[1]}
-                         :item
-                    )
-                    console.log(VisitPages,"updated data")
-                  TrackActivity.updateOne({VisitedDate},{$set:{VisitedPages:VisitPages}},function(err,updateTrack) {
-                    if(err) {
-                      console.log(err);
-                    }else{
-                        if (updateTrack) {
-                            callback([true, updateTrack]);
-                        } else {
-                            callback([false, []]);
-                    
-                        }
-                    }
-                  })
-            })
-        }else{
-            console.log("VisitedPages",VisitedPages[0])
-            const add=VisitedPages[0]
-            // VisitPages={...VisitPages,add};
-            console.log("add",VisitPages)
+                // console.log(updatealldata[0].VisitedPages,"updated data")
 
-            VisitPages=[...VisitPages,add]
-            console.log("Visit",VisitPages)
-
-            TrackActivity.updateOne({VisitedDate},{$set:{VisitedPages:VisitPages}},function(err,updateTrack) {
+            //   TrackActivity.updateOne({VisitedDate},{$set:{TrackData:updatealldata}},function(err,updateTrack) {
+            //     if(err) {
+            //       console.log(err);
+            //     }else{
+            //         if (updateTrack) {
+            //             callback([true, updateTrack]);
+            //         } else {
+            //             callback([false, []]);
+                
+            //         }
+            //     }
+            //   })
+        })
+    }else{
+        const add=page[0]
+        oldpage=[...oldpage,add]
+        console.log(UserId,"allp")
+ 
+        await updatevisitpage(finddata.TrackData,oldpage,UserId,async function (getupdated){
+            
+            console.log(getupdated[1][0].VisitedPages,"getupdated")
+            
+            TrackActivity.updateOne({VisitedDate},{$set:{TrackData:getupdated[1][0].VisitedPages}},function(err,updateTrack) {
                 if(err) {
                   console.log(err);
                 }else{
@@ -91,20 +90,100 @@ const trackActivity = async(data,callback) => {
                     }
                 }
               })
-        }
-    
-    
+        })
+
+         
+        
+    }
+}
+
+
+const updatevisitpage = async (finddata,oldpage,UserId,callback) =>{
+        //Find index of specific object using findIndex method.    
+        objIndex = finddata.findIndex((item => String(item.UserId)===UserId));
+        //Log object to Console.
+        console.log("Before update: ", finddata[objIndex])
+        //Update object's name property.
+        finddata[objIndex].VisitedPages =oldpage
+        //Log object to console again.
+        console.log("After update: ", finddata[objIndex])
+        if(finddata){
+            callback([true, finddata]);
+        } else {
+            callback([false, []]);
+        } 
+}
+
+
+// const updatettrackata = async (finddata,oldpage,UserId,callback) =>{
+//     //Find index of specific object using findIndex method.    
+//     objIndex = finddata.findIndex((item => String(item.UserId)===UserId));
+//     //Log object to Console.
+//     console.log("Before update: ", finddata[objIndex])
+//     //Update object's name property.
+//     finddata[objIndex].VisitedPages =oldpage
+//     //Log object to console again.
+//     console.log("After update: ", finddata[objIndex])
+//     if(finddata){
+//         callback([true, finddata]);
+//     } else {
+//         callback([false, []]);
+//     } 
+// }
+
+
+const trackActivity = async(data,callback) => {
+
+    const  {VisitedDate,TrackData} = data;
+    // find date 
+    const finddata= await TrackActivity.findOne({VisitedDate:VisitedDate});
+ 
+    if(finddata){
+      
+        const updatedata =finddata.TrackData;
+        // find user after date matiching
+        const findUser = updatedata.find(item=> 
+            String(item.UserId)===TrackData.UserId
+        )
+        if(findUser){
+
+             await updatePage(finddata,findUser,TrackData,async function(getupdatetime){
+                if (getupdatetime) {
+                    callback([true, getupdatetime]);
+                } else {
+                    callback([false, []]);
+            
+                }
+            })
+        }else{
+            console.log(updatedata)
+            const addnewUser =[...updatedata,TrackData]
+            console.log("add new user",addnewUser)
+            TrackActivity.updateOne({VisitedDate},{$set:{TrackData:addnewUser}},function(err,updateTrack) {
+                if(err) {
+                  console.log(err);
+                }else{
+                    if (updateTrack) {
+                        callback([true, updateTrack]);
+                    } else {
+                        callback([false, []]);
+                
+                    }
+                }
+              })
+
+        } 
     }else{
         const trackActivityData=new TrackActivity(data);
         try{
         const result=await trackActivityData.save();
         console.log("result",result)
-        if (updateTrack) {
-            callback([true, updateTrack]);
+        if (result) {
+            callback([true, result]);
         }
         }catch(error){
            
-                callback([false, updateTrack]);
+                callback([false, "can not add"]);
           
         }
     }
