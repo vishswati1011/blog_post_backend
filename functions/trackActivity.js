@@ -67,28 +67,7 @@ const updatePage =async(finddata,findUser,TrackData,VisitedDate,callback) =>{
             }
             }) 
         }     
-            //     console.log(allpages,"allpages after")
-                // updatealldata= await updatealldata.map(
-                //     item=>
-                //         item.UserId===UserId ?
-                //          {...item,VisitedPages:allpages}
-                //          :item
-                //     )
-
-                // console.log(updatealldata[0].VisitedPages,"updated data")
-
-            //   TrackActivity.updateOne({VisitedDate},{$set:{TrackData:updatealldata}},function(err,updateTrack) {
-            //     if(err) {
-            //       console.log(err);
-            //     }else{
-            //         if (updateTrack) {
-            //             callback([true, updateTrack]);
-            //         } else {
-            //             callback([false, []]);
-                
-            //         }
-            //     }
-            //   })
+       
         })
     }else{
         // adg new page

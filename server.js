@@ -45,9 +45,9 @@ io.on('connection', (socket) => {
       socket.on("update_status",(data)=>{
 
       console.log(data)
-      trackActivity(data,function(response){
-          console.log("response",response)
-      } );
+      trackActivity(data,function(responses){
+        console.log("response",responses)
+      });
     })
   socket.on('disconnect', () => {
     console.log('🔥: A user disconnected');
